@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'damo',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': '10.17.0.190',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
