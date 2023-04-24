@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="head-login">LOGIN</h1>
+      <br>
+      <form action="login" method="post" class="form-horizontal">
+
+        <div class = "c-user">
+            <input class="username" type="text" name="username" id="username" placeholder="Enter Username">
+        </div>
+        <div class="c-pass">
+            <input class="password" type="password" name="password" id="password" placeholder="Enter Password">
+        </div>
+        
+        <div class= "btn-31">
+          <button class="button-29">LOGIN</button>
+        </div>
+        <div class="btn-30">
+          <a class="button-29" href="/">BACK</a>
+        </div>
+        <br/>
+    </form>
+    </div>
+
+    <img class="images" src="{% static 'greyHeart.png' %}"  />
+  </body>
+</html>

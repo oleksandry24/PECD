@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+  </head>
+  <body>
+    <nav class = "nav">
+
+      <div>
+        <ion-icon class='ion' name="person-outline"></ion-icon>
+      </div>
+
+      <div class="nav-link-container">
+        <a href="/beat" class="nav-link">
+            <span class="nav-text">Número Total de Beats</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/pvc" class="nav-link">
+            <span class="nav-text">Número Total de PVCs</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/pvcsH" class="nav-link">
+            <span class="nav-text">Número de PVCs/Hora</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/f1" class="nav-link">
+            <span class="nav-text">F1-SCORE</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/ecg-medio" class="nav-link">
+            <span class="nav-text">ECG Médio</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/relatorio" class="nav-link">
+            <span class="nav-text">Relatório</span>
+        </a>
+      </div>
+      <div class="nav-link-session">
+        <a href="/logout" class="nav-session">
+            <span class="nav-text">Terminar Sessão</span>
+        </a>
+      </div>
+    </nav>
+    <div class="section">
+        <h1 class = "user">Bem-vindo Doutor(a), {{ first_name }} {{ last_name }}!</h1>
+
+        <a class = "import" href="/paciente">
+           <button class="btn"><ion-icon name="cloud-upload-outline" style="margin-right: 15px;"></ion-icon>Selecionar ECG para analisar</button>
+        </a>
+    </div>
+    <div class = "error">
+            <span><ion-icon name="warning-outline" style="color:red; margin-right: 15px;"></ion-icon>Não selecionou nenhum ficheiro!</span>
+    </div>
+
+    <img class="images" src="{% static 'redHeart.png' %}">
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  </body>
+  
+</html>

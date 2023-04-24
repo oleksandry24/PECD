@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <title>register</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+  </head>
+  <body>
+    <h1 class = 'head-login'>REGISTRAR</h1>
+    <br>
+    <form action="{% url 'register' %}" method="POST">
+      <div class="c-user">
+        <input class="username" type="text" name="username" id="username" placeholder="Enter Username"
+          Required>
+      </div>
+      <div class="c-first">
+        <input class="first" type="text" name="first_name" id="first_name" placeholder="Enter First Name"
+          Required>
+      </div>
+      <div class="c-last"">
+        <input class = "last" type="text"  name="last_name" id="last_name" placeholder="Enter Last Name"
+          Required>
+      </div>
+      <div class="c-pass">
+        <input class="password" type="password" name="password" id="password" placeholder="Enter Password"
+          Required>
+      </div>
+      <div class="c-conf">
+        <input class = "confirm" type="password" name="confirm_password" id="confirm_password"
+          placeholder="Confirm Your Password" Required>
+      </div>
+      
+      <div class= "btn-33">
+        <button class="button-29">SIGN UP</button>
+      </div>
+      <div class="btn-34">
+        <a class="button-29" href="/">BACK</a>
+      </div>
+
+    </form>
+
+    <img class="images" src="{% static 'greyHeart.png' %}"  />
+
+  </body>
+</html>
