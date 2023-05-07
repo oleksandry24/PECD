@@ -17,6 +17,6 @@ urlpatterns = [
     path('f1', views.f1, name = 'f1'),
     path('ecg-medio', views.ecg, name = 'ecg'),
     path('relatorio', views.relatorio, name = 'relatorio'),
-    path('logout', views.welcome, name = 'logout'),
+    path('logout', views.logout, name = 'logout'),
     path('new_home',views.new_home, name = 'new_home')
 ]

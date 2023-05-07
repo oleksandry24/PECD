@@ -52,7 +52,7 @@
       </div>
     </nav>
     <div class="section">
-        <h1 class = "user">Bem-vindo Doutor(a), {{ first_name }} {{ last_name }}!</h1>
+        <h1 class = "user">Bem-vindo Doutor(a)!</h1>
 
         <div class="capsula1">
           <p class = 'text'>Neste eletrocardiograma (ECG) conseguimos observar:</p>
@@ -65,8 +65,11 @@
         <p class = "result5">{{result5}} ECG Médio</p>
     </div>
 
-    <div class="container-pac">
-      <a href="/paciente" class = "pac">Escolher Outro Paciente</a>
+    <div class="container-change">
+      <a href="/paciente" class="pac">
+        
+        <span>Escolher Outro Paciente</span>
+      </a>
     </div>
 
     <img class="images" src="{% static 'blueHeart.png' %}">

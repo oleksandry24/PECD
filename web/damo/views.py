@@ -11,17 +11,21 @@ import pandas as pd
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
 from django.contrib.auth import login as logg
+from django.contrib.auth import logout
 from django.contrib.auth import authenticate
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
+
 from .data import model, clf, preprocess_ecg
+
+# https://youtube.com/shorts/X7i9VNKrHl0?feature=share
 
 pacient = None
 first_name = None
 last_name = None
 beats = 0
-
+user = None
 def welcome(request):
     return render(request, "damo/welcome.html")
 
@@ -53,6 +57,7 @@ def register(request):
 def login(request):
     global last_name
     global first_name
+    global user
     if request.method == 'POST':
         # Receber os dados do formulário HTML
         username = request.POST['username']
@@ -60,7 +65,6 @@ def login(request):
 
         # Autenticar o usuário
         user = authenticate(request, username=username, password=password)
-    
         # Verificar se as credenciais estão corretas
         if user is not None:
             # Criar uma sessão de usuário ativa
@@ -71,6 +75,13 @@ def login(request):
         else:
             return render(request, 'damo/login_error.html')
     return render(request, 'damo/login.html')
+
+def logout(request):
+    template = loader.get_template('damo/logout.html')
+    if request.method == 'POST':
+        logout(request)
+        return render(request, 'damo/welcome.html')
+    return HttpResponse(template.render(request))
 
 def home(request):
     global pacient
@@ -92,7 +103,6 @@ def paciente(request):
         filename = fs.save(myfile.name, myfile)
         pacient = fs.url(filename)
         print(pacient)
-        
         
         allowed_extensions = {'.mat'}
         #if allowed_file(pacient, allowed_extensions):
@@ -242,5 +252,7 @@ def predict(data):
     print(classification_report(y_test, clf_pred, zero_division=1))
     accuracy = model.score(X_test, y_test)
     print(f"Acurácia do modelo SVM: {accuracy:.2f}")
+
+
 
 

@@ -53,18 +53,21 @@
       </div>
     </nav>
     <div class="section">
-      <h1 class = "user">Bem-vindo Doutor(a), {{ first_name }} {{ last_name }}!</h1>
-        <form method="post" enctype="multipart/form-data">
+      <h1 class = "user">Bem-vindo Doutor(a)!</h1>
+
+      <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="container-pac">
-            <label class="upload"> Upload File
-              <input type="file" name="myfile" style="visibility: hidden;">
+            <ion-icon name="logo-dropbox" class="dropbox"></ion-icon>
+            <h2></h2>
+            <label style="align-items: center;">
+              <input type="file" name="myfile">
             </label>
-          </div>  
-          <div class= "btn-34">
-            <button class="button-29">CONFIRM</button>
           </div>
           <br/>
+          <div class="confimar">
+            <button class="button-35" role="button">CONFIRM</button>
+          </div>
         </form>
     </div>
   

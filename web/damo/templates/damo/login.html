@@ -1,8 +1,12 @@
 <html>
   <head>
     <title>login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    
   </head>
   <body>
     <div class="container">
@@ -18,15 +22,19 @@
         </div>
         
         <div class= "btn-31">
-          <button class="button-29">LOGIN</button>
-        </div>
-        <div class="btn-30">
-          <a class="button-29" href="/">BACK</a>
-        </div>
-        <br/>
+        <button class="button-29">PRÓXIMO</button>
+      </div>
+      <div class="btn-29">
+        <a href="/">
+          <ion-icon name="arrow-undo-outline" class="back"></ion-icon>
+        </a>
+      </div>
     </form>
     </div>
 
     <img class="images" src="{% static 'greyHeart.png' %}"  />
-  </body>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
 </html>

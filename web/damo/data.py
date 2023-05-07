@@ -16,7 +16,6 @@ import pywt
 
 path = pd.DataFrame(glob(r'dataPVC/*'))
 path.columns = ['data']
-pip
 global_ecg = pd.DataFrame(columns=["ECG","IND","PVC"])
 
 def globalDataFrame(global_ecg):

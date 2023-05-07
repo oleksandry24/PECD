@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
+
   </head>
   <body>
     <nav class = "nav">
@@ -52,17 +53,10 @@
       </div>
     </nav>
     <div class="section">
-        <h1 class = "user">Bem-vindo Doutor(a), {{ first_name }} {{ last_name }}!</h1>
-
-        {% if selected_option is none %}
-        <a class = "import" href="/paciente">
+        <h1 class = "user">Bem-vindo Doutor(a)!</h1>
+        <a href="/paciente">
            <button class="btn"><ion-icon name="cloud-upload-outline" style="margin-right: 15px;"></ion-icon>Selecionar ECG para analisar</button>
         </a>
-        {% endif %}
-        {% if selected_option != none %}
-        <p>Paciente Selecionado: {{selected_option}}</p>
-        {% endif %}
-
     </div>
 
     <img class="images" src="{% static 'blueHeart.png' %}"  />
