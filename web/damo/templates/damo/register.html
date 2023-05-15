@@ -83,9 +83,11 @@
           var x = document.getElementById("btn-33");
         
           if (name.value && first.value && password.value && last.value && confirm.value) {
+            message.style.display = 'none';
             x.style.display = "block";
           } else {
             x.style.display = "none";
+            message.style.display = 'block';
           }
         }
         </script>
