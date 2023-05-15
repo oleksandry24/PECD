@@ -11,9 +11,6 @@
   <body>
     <nav class = "nav">
 
-      <div>
-        <ion-icon class='ion' name="person-outline"></ion-icon>
-      </div>
 
       <div class="nav-link-container">
         <a href="/beat" class="nav-link">
@@ -32,12 +29,27 @@
       </div>
       <div class="nav-link-container">
         <a href="/f1" class="nav-link">
-            <span class="nav-text">F1-SCORE</span>
+            <span class="nav-text">F1-Score</span>
         </a>
       </div>
       <div class="nav-link-container">
         <a href="/ecg-medio" class="nav-link">
             <span class="nav-text">ECG Médio</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/media-pvcs" class="nav-link">
+            <span class="nav-text">Média PVCs</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/ritmo" class="nav-link">
+            <span class="nav-text">Ritmo Cardíaco Médio</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/ciclicos" class="nav-link">
+            <span class="nav-text">PVCs Ciclicos</span>
         </a>
       </div>
       <div class="nav-link-container">
@@ -51,18 +63,20 @@
         </a>
       </div>
     </nav>
+    <h1 class = "user">Relatório do Electrocardiograma</h1>
     <div class="section">
-        <h1 class = "user">Bem-vindo Doutor(a)!</h1>
-
         <div class="capsula1">
           <p class = 'text'>Neste eletrocardiograma (ECG) conseguimos observar:</p>
         </div>
         
-        <p class = "result1">{{result1}} Total Beats</p>
-        <p class = "result2">{{result2}} PVCs</p>
-        <p class = "result3">{{result3}} PVCs/Hora</p>
-        <p class = "result4">{{result4}}% f1Score</p>
-        <p class = "result5">{{result5}} ECG Médio</p>
+        <p class = "result1">Total Beats: {{result1}}</p>
+        <p class = "result2">PVCs: {{result2}} </p>
+        <p class = "result3">PVCs/Hora: {{result3}} </p>
+        <p class = "result4">F1-Score: {{result4}}%</p>
+        <p class = "result5">Média de PVCs: {{result5}} </p>
+        <p class = "result9">Ritmo Cardíaco Médio: {{result6}} </p>
+        <p class = "result8">PVCs Cíclicos: {{result7}} </p>
+
     </div>
 
     <div class="container-change">

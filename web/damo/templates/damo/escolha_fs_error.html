@@ -10,8 +10,6 @@
   </head>
   <body>
     <nav class = "nav">
-
-
       <div class="nav-link-container">
         <a href="/beat" class="nav-link">
             <span class="nav-text">Número Total de Beats</span>
@@ -64,19 +62,17 @@
       </div>
     </nav>
     <div class="section">
-        <h1 class = "user">Número Total de Beats</h1>
+        <h1 class = "user">Erro de Seleção</h1>
 
-        <div class="capsula1">
-          <p class = 'text'>O número total de beats do eletrocardiograma que selecionou é:</p>
-        </div>
-          <p class = "result">{{result}} Beats</p>
+        <a class = "import" href="/paciente">
+           <button class="btn"><ion-icon name="cloud-upload-outline" style="margin-right: 15px;"></ion-icon>Selecionar ECG para analisar</button>
+        </a>
+    </div>
+    <div class = "error">
+            <span><ion-icon name="warning-outline" style="color:#B50000; margin-right: 15px;"></ion-icon>Não selecionou nenhum ficheiro!</span>
     </div>
 
-    <div class="container-change">
-      <a href="/paciente" class = "pac">Escolher Outro Paciente</a>
-    </div>
-
-    <img class="images" src="{% static 'blueHeart.png' %}">
+    <img class="images" src="{% static 'redHeart.png' %}">
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

@@ -1,3 +1,4 @@
+from pathlib import Path
 import signal
 from scipy.io import loadmat
 import pandas as pd
@@ -10,12 +11,19 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import svm
 
+import os
+
 import pywt
 
 ## Load Data 
 
-path = pd.DataFrame(glob(r'dataPVC/*'))
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+directory = os.path.join(BASE_DIR, 'dataPVC')
+
+path = pd.DataFrame(glob(directory+'/*'))
 path.columns = ['data']
+
 global_ecg = pd.DataFrame(columns=["ECG","IND","PVC"])
 
 def globalDataFrame(global_ecg):

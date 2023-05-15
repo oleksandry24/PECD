@@ -12,9 +12,6 @@
   <body>
     <nav class = "nav">
 
-      <div>
-        <ion-icon class='ion' name="person-outline"></ion-icon>
-      </div>
 
       <div class="nav-link-container">
         <a href="/beat" class="nav-link">
@@ -33,12 +30,27 @@
       </div>
       <div class="nav-link-container">
         <a href="/f1" class="nav-link">
-            <span class="nav-text">F1-SCORE</span>
+            <span class="nav-text">F1-Score</span>
         </a>
       </div>
       <div class="nav-link-container">
         <a href="/ecg-medio" class="nav-link">
             <span class="nav-text">ECG Médio</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/media-pvcs" class="nav-link">
+            <span class="nav-text">Média PVCs</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/ritmo" class="nav-link">
+            <span class="nav-text">Ritmo Cardíaco Médio</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/ciclicos" class="nav-link">
+            <span class="nav-text">PVCs Ciclicos</span>
         </a>
       </div>
       <div class="nav-link-container">
@@ -53,7 +65,7 @@
       </div>
     </nav>
     <div class="section">
-      <h1 class = "user">Bem-vindo Doutor(a)!</h1>
+      <h1 class = "user">Escolha do Electrocardiograma</h1>
 
       <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
@@ -61,16 +73,23 @@
             <ion-icon name="logo-dropbox" class="dropbox"></ion-icon>
             <h2></h2>
             <label style="align-items: center;">
-              <input type="file" name="myfile">
+              <input type="file" name="myfile" id="upload" onchange="showButton()">
             </label>
           </div>
           <br/>
-          <div class="confimar">
-            <button class="button-35" role="button">CONFIRM</button>
+          <div class="confirmar" id = 'btn1' style="display:none">
+            <button class="button-35" role="button">CONFIRMAR</button>
           </div>
         </form>
     </div>
-  
+    
+    <script>
+      function showButton() {
+        var x = document.getElementById('btn1');
+        x.style.display = 'block';
+      }
+    </script>
+
     <img class="images" src="{% static 'blueHeart.png' %}"  />
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

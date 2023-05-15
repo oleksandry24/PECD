@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+  </head>
+  <body>
+    <nav class = "nav">
+        <div class="nav-link-container">
+            <a href="/beat" class="nav-link">
+                <span class="nav-text">Número Total de Beats</span>
+            </a>
+          </div>
+          <div class="nav-link-container">
+            <a href="/pvc" class="nav-link">
+                <span class="nav-text">Número Total de PVCs</span>
+            </a>
+          </div>
+          <div class="nav-link-container">
+            <a href="/pvcsH" class="nav-link">
+                <span class="nav-text">Número de PVCs/Hora</span>
+            </a>
+          </div>
+          <div class="nav-link-container">
+            <a href="/f1" class="nav-link">
+                <span class="nav-text">F1-Score</span>
+            </a>
+          </div>
+          <div class="nav-link-container">
+            <a href="/ecg-medio" class="nav-link">
+                <span class="nav-text">ECG Médio</span>
+            </a>
+          </div>
+          <div class="nav-link-container">
+            <a href="/media-pvcs" class="nav-link">
+                <span class="nav-text">Média PVCs</span>
+            </a>
+          </div>
+          <div class="nav-link-container">
+            <a href="/ritmo" class="nav-link">
+                <span class="nav-text">Ritmo Cardíaco Médio</span>
+            </a>
+          </div>
+          <div class="nav-link-container">
+            <a href="/ciclicos" class="nav-link">
+                <span class="nav-text">PVCs Ciclicos</span>
+            </a>
+          </div>
+          <div class="nav-link-container">
+            <a href="/relatorio" class="nav-link">
+                <span class="nav-text">Relatório</span>
+            </a>
+          </div>
+          <div class="nav-link-session">
+            <a href="/logout" class="nav-session">
+                <span class="nav-text">Terminar Sessão</span>
+            </a>
+          </div>
+    </nav>
+    <div class="section">
+        <h1 class = "user">Escolha da Frequência de Amostragem</h1>
+
+        <div class="freq2">
+          <p class = 'text'>Pretende inserir uma frequência de amostragem:</p>
+        </div>
+        
+        <div class="checkbox-wrapper-39">
+          <div class="freq">
+            <label>
+              <input type="checkbox" value="Sim" id="input1" name="escolha" onclick="myFunction(), uncheck(), allwaysCheck()"/>
+              <span for="Sim" class="checkbox"></span>
+            </label>
+          </div>  
+          <div class="freq_n">
+            <label>
+              <input type="checkbox" value="Nao" id="input2" name="escolha" onclick="uncheck_2(),myFunction_2(), allwaysCheck()" checked/>
+              <span for="Sim" class="checkbox"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="label1">
+          <p class="l1">Sim</p>
+        </div>
+
+        <div class="label2">
+          <p class="l2">Não</p>
+        </div>
+
+        <div id="btn" class="btn-seguinte-1">
+          <a href="/ecg" class = "seguinte">Seguinte</a>
+        </div>
+
+        <form  method="POST" role="form" >
+          <div id="myDIV" style="display: none;">
+            <div class="freq3">  
+              <p class = 'text'>Insira a frequência de amostragem que o eletrocardiograma tem:</p>
+            </div>
+            <div class="result-freq1">
+              
+              {% csrf_token %}
+              <div class = "">
+                <input class="result-freq" type="number" name="fs" id="fs" placeholder="Frequência">
+              </div>
+              
+            </div>
+            <div id="btn" class="btn-seguinte" style="display: block">
+              <button class = "seguinte">Seguinte</button>
+            </div>
+          </div>
+        </form>
+    </div>
+
+
+
+    <div class="container-change">
+      <a href="/paciente" class = "pac">Escolher Outro Paciente</a>
+    </div>
+
+    <script>
+      function uncheck() {
+        var x = document.getElementById("input1");
+        var y = document.getElementById("input2");
+
+        if(x.checked == true) {
+          y.checked = false;
+        } 
+      }
+    </script>
+
+    <script>
+      function uncheck_2() {
+        var x = document.getElementById("input1");
+        var y = document.getElementById("input2");
+
+        if(y.checked == true) {
+          x.checked = false;
+        }
+      }
+    </script>
+
+    <script>
+      function myFunction() {
+        var x = document.getElementById("myDIV");
+        var y = document.getElementById("btn");
+        if (x.style.display === "none") {
+          y.style.display = 'none';
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+      } 
+    </script>
+    
+    <script>
+      function myFunction_2() {
+        var x = document.getElementById("myDIV");
+        var y = document.getElementById("btn");
+
+        if (x.style.display === "block") {
+          y.style.display = 'block';
+          x.style.display = "none";
+        } 
+      } 
+    </script>
+
+    <script>
+      function allwaysCheck() {
+        var x = document.getElementById("input1");
+        var y = document.getElementById("input2");
+
+        if (x.checked == false && y.checked == false) {
+          y.checked = true;
+        }
+      }
+    </script>
+
+    <img class="images" src="{% static 'blueHeart.png' %}">
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  </body>
+  
+</html>

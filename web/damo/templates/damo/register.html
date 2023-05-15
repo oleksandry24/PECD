@@ -17,27 +17,31 @@
     <br>
     <form action="{% url 'register' %}" method="POST">
       <div class="c-user">
-        <input class="username" type="text" name="username" id="username" placeholder="Enter Username"
+        <input class="username" type="text" name="username" id="username" placeholder="Enter Username" oninput="checkForm()"
           Required>
       </div>
       <div class="c-first">
-        <input class="first" type="text" name="first_name" id="first_name" placeholder="Enter First Name"
+        <input class="first" type="text" name="first_name" id="first_name" placeholder="Enter First Name" oninput="checkForm()"
           Required>
       </div>
-      <div class="c-last"">
-        <input class = "last" type="text"  name="last_name" id="last_name" placeholder="Enter Last Name"
+      <div class="c-last">
+        <input class = "last" type="text"  name="last_name" id="last_name" placeholder="Enter Last Name" oninput="checkForm()"
           Required>
       </div>
       <div class="c-pass">
-        <input class="password" type="password" name="password" id="password" placeholder="Enter Password"
+        <input class="password" type="password" name="password" id="password" oninput="checkPassword()" placeholder="Enter Password"
           Required>
       </div>
       <div class="c-conf">
-        <input class = "confirm" type="password" name="confirm_password" id="confirm_password"
+        <input class = "confirm" type="password" name="confirm_password" id="confirm_password" oninput="checkForm()"
           placeholder="Confirm Your Password" Required>
       </div>
       
-      <div class= "btn-33">
+      <div class="password-message">
+        <p id="message" class="message"></p>
+      </div>
+
+      <div class= "btn-33" id="btn-33" style="display:none">
         <button class="button-29">PRÓXIMO</button>
       </div>
       <div class="btn-29">
@@ -46,6 +50,45 @@
         </a>
       </div>
     </form>
+
+    <script>
+      function checkPassword() {
+        var password = document.getElementById("password");
+        var message = document.getElementById("message");
+        var x = document.getElementById('btn-33')
+        var lengthRegex = /.{8,}/; // pelo menos 8 caracteres
+        var uppercaseRegex = /[A-Z]/; // pelo menos uma letra maiúscula
+        var specialRegex = /[!@#$%^&*(),.?":{}|<>]/; // pelo menos um caracter especial
+      
+        if (!lengthRegex.test(password.value)) {
+          message.innerHTML = "A senha deve ter pelo menos 8 caracteres";
+        } else if (!uppercaseRegex.test(password.value)) {
+          message.innerHTML = "A senha deve ter pelo menos uma letra maiúscula";
+        } else if (!specialRegex.test(password.value)) {
+          message.innerHTML = "A senha deve ter pelo menos um caracter especial";
+        } else {
+          message.innerHTML = "";
+        }
+      }
+      </script>
+
+      <script>
+        function checkForm() {
+          var name = document.getElementById("username");
+          var first  = document.getElementById("first_name");
+          var last = document.getElementById('last_name')
+          var password = document.getElementById("password");
+          var confirm = document.getElementById("confirm_password");
+
+          var x = document.getElementById("btn-33");
+        
+          if (name.value && first.value && password.value && last.value && confirm.value) {
+            x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
+        }
+        </script>
 
     <img class="images" src="{% static 'greyHeart.png' %}"  />
 

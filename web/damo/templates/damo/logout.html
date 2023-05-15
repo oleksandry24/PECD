@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    
+  </head>
+  <body>
+    <div class="logout-container">
+        <p class='logout-title'>Terminar Sessão</p>
+    </div>
+    <div class="logout-message">
+        <p class="log-m">Tem a certeza que quer terminar a sessão?</p>
+    </div>
+    <div class="btn-goback">
+        <a href="/home" class="button-50">
+            <ion-icon name="arrow-undo-outline"></ion-icon>
+            VOLTAR ATRÁS
+        </a>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="btn-confirmar">
+            <button class="button-50">
+                <ion-icon name="checkmark-done-outline"></ion-icon>
+                CONFIRMAR
+            </button>
+        </div>
+    </form>
+    
+
+    <img class="images" src="{% static 'greyHeart.png' %}"  />
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

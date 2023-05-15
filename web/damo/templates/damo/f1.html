@@ -11,9 +11,6 @@
   <body>
     <nav class = "nav">
 
-      <div>
-        <ion-icon class='ion' name="person-outline"></ion-icon>
-      </div>
 
       <div class="nav-link-container">
         <a href="/beat" class="nav-link">
@@ -32,12 +29,27 @@
       </div>
       <div class="nav-link-container">
         <a href="/f1" class="nav-link">
-            <span class="nav-text">F1-SCORE</span>
+            <span class="nav-text">F1-Score</span>
         </a>
       </div>
       <div class="nav-link-container">
         <a href="/ecg-medio" class="nav-link">
-            <span class="nav-text">ECG Médio</span>
+            <span class="nav-text">ECG Média</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/media-pvcs" class="nav-link">
+            <span class="nav-text">Média PVCs</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/ritmo" class="nav-link">
+            <span class="nav-text">Ritmo Cardíaco Médio</span>
+        </a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/ciclicos" class="nav-link">
+            <span class="nav-text">PVCs Ciclicos</span>
         </a>
       </div>
       <div class="nav-link-container">
@@ -52,20 +64,20 @@
       </div>
     </nav>
     <div class="section">
-        <h1 class = "user">Bem-vindo Doutor(a)!</h1>
+        <h1 class = "user">F1 Score</h1>
 
         <div class="capsula2">
-          <p class = 'text'>Neste eletrocardiograma existem:</p>
+          <p class = 'text'>Neste eletrocardiograma existe:</p>
         </div>
       
-        <p class = "result">{{result}}% f1Score</p>
+        <p class = "result">{{result}}% F1 Score</p>
     </div>
 
     <div class="container-change">
       <a href="/paciente" class = "pac">Escolher Outro Paciente</a>
     </div>
 
-    <img class="images" src="../icons/blueHeart.png">
+    <img class="images" src="{% static 'blueHeart.png' %}">
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

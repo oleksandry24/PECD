@@ -10,8 +10,6 @@
   </head>
   <body>
     <nav class = "nav">
-
-
       <div class="nav-link-container">
         <a href="/beat" class="nav-link">
             <span class="nav-text">Número Total de Beats</span>
@@ -29,7 +27,7 @@
       </div>
       <div class="nav-link-container">
         <a href="/f1" class="nav-link">
-          <span class="nav-text">F1-Score</span>
+            <span class="nav-text">F1-Score</span>
         </a>
       </div>
       <div class="nav-link-container">
@@ -64,12 +62,17 @@
       </div>
     </nav>
     <div class="section">
-        <h1 class = "user">Número Total de Beats</h1>
+        <h1 class = "user">Eletrocardiograma Médio</h1>
 
-        <div class="capsula1">
-          <p class = 'text'>O número total de beats do eletrocardiograma que selecionou é:</p>
+        <div class="capsula2">
+          <p class = 'text'>Visualização do ECG Médio com frequência:</p>
         </div>
-          <p class = "result">{{result}} Beats</p>
+        
+        <div class="img-ecg">
+          {% block content %}
+            <img class="img-result" src="data:image/png;base64,{{ result }}">
+          {% endblock %}
+        </div>
     </div>
 
     <div class="container-change">
@@ -77,6 +80,7 @@
     </div>
 
     <img class="images" src="{% static 'blueHeart.png' %}">
+    
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
