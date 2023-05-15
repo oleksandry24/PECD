@@ -79,9 +79,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'damo',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
+        'USER': 'damo_user',
+        'PASSWORD': 'Hiz8EK43Th6lBvBzGf8JKfCYbXpGovPf',
+        'HOST': 'dpg-chbdbfik728tp9dm2k5g-a.frankfurt-postgres.render.com',
         'PORT': '5432',
     }
 }
