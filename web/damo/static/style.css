@@ -780,7 +780,7 @@ WELCOME
 .head-login {
     position: absolute;
     top: 150px;
-    left: 650px;
+    left: 600px;
     font-size: 50px;
     font-weight: bold;
     font-family: 'Eagle Light', sans-serif;
@@ -789,13 +789,13 @@ WELCOME
 .c-user {
     position: absolute;
     top: 250px;
-    left: 650px;
+    left: 600px;
 }
 
 .c-pass {
     position: absolute;
     top: 330px;
-    left: 650px;
+    left: 600px;
 }
 
 .username {
@@ -822,20 +822,6 @@ WELCOME
     display: inline-block;
     width: 400px;
     height: 60px;
-}
-
-.password-message {
-    position: absolute;
-    top: 650px;
-    left: 650px;
-    width: 400px;
-}
-
-.message {
-    color: red;
-    font-size: 15px;
-    font-weight: bold;
-    font-family: 'Eagle Light', sans-serif;
 }
 
 .btn-31 {
@@ -892,7 +878,7 @@ WELCOME
 .btn-33 {
     position: absolute;
     top: 650px;
-    left: 650px;
+    left: 600px;
     width: 400px;
 }
 
