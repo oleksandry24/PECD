@@ -15,6 +15,7 @@ urlpatterns = [
     path('pvc', views.pvc, name = 'pvc'),
     path('pvcsH', views.pvcH, name = 'pvcH'),
     path('f1', views.f1, name = 'f1'),
+    path('error',views.error, name='error'),
     path('escolha_fs',views.escolha_fs, name= 'escolha_fs'),
     path('ecg-medio', views.ecg_medio, name='ecg_medio'),
     path('ecg-plot', views.ecg_medio_plot, name='ecg_medio_plot'),

@@ -43,6 +43,8 @@ ritmo_medio = 0
 f1_score = 0
 average_pvc_ecg = 0
 ciclicos_pvcs = 0
+ciclos = 0
+totalCiclos = 0
 
 def welcome(request):
     return render(request, "damo/welcome.html")
@@ -111,7 +113,7 @@ def escolha_fs(request):
             return redirect(new_home)
         elif fs == '0':
             return render(request, 'damo/ecg_error.html')
-    
+
     fs = None
     return render(request, 'damo/escolha_fs.html')
 
@@ -119,6 +121,8 @@ def new_home(request):
     global pacient
     global fs
     global myfile
+    if myfile == None or myfile == 0:
+        return redirect(paciente)
     predict(myfile, fs)
     template = loader.get_template('damo/new_home.html')
     context = {'fs': fs}
@@ -135,7 +139,7 @@ def paciente(request):
         load = loadmat(myfile)
         myfile = load
         pacient = fs.url(filename)
-        
+
         allowed_extensions = {'mat'}
         if allowed_file(pacient, allowed_extensions):
             if load == {}:
@@ -156,7 +160,7 @@ def ecg_medio(request):
     global pacient
     global fs
     if pacient is None:
-        return render(request, 'damo/escolha_fs_eror.html')
+        return render(request, 'damo/escolha_fs_error.html')
     else:
         if fs != None:
             return redirect(ecg_medio_fs)
@@ -166,10 +170,10 @@ def ecg_medio(request):
 def beat(request):
     global beats
     global pacient
-    if pacient is None:
-        template = loader.get_template('damo/beat_error.html')
-    else:
+    if pacient is not None:
         template = loader.get_template('damo/beat.html')
+    else:
+        template = loader.get_template('damo/beat_error.html')
 
     context = {'result':beats}
 
@@ -178,10 +182,11 @@ def beat(request):
 def pvc(request):
     global pvcs
     global pacient
-    if pacient is None:
-        template = loader.get_template('damo/pvc_error.html')
-    else:
+    if pacient is not None:
         template = loader.get_template('damo/pvc.html')
+    else:
+        template = loader.get_template('damo/pvc_error.html')
+
 
     context = {'result' : pvcs}
     return HttpResponse(template.render(context,request))
@@ -190,10 +195,11 @@ def pvc(request):
 def pvcH(request):
     global pacient
     global pvch
-    if pacient is None:
-        template = loader.get_template('damo/pvcsH_error.html')
-    else:
+    if pacient is not None:
         template = loader.get_template('damo/pvcsH.html')
+    else:
+        template = loader.get_template('damo/pvcsH_error.html')
+
 
     context = {'result' : pvch}
 
@@ -203,35 +209,47 @@ def pvcH(request):
 def f1(request):
     global pacient
     global f1_score
-    if pacient is None:
-        template = loader.get_template('damo/f1_error.html')
-    else:
+    if pacient is not None:
         template = loader.get_template('damo/f1.html')
+    else:
+        template = loader.get_template('damo/f1_error.html')
 
     context = {'result' : round(float(f1_score)*100,2)}
 
     return HttpResponse(template.render(context,request))
 
+def error(request):
+    return render(request, 'damo/error.html')
+    
+
 def ecg_medio_plot(request):
     global pacient
     global fig_path
-    fig_path = plt_ecg_medio()
-    return render(request, 'damo/ecg-medio.html', {'result': fig_path})
+    global ind, pvcc, ecg
+    fig_path = plt_ecg_medio(ind,pvcc,ecg)
+    if fig_path is None:
+        return render(request,'damo/error.html')
+    else: 
+        return render(request, 'damo/ecg-medio.html', {'result': fig_path})
 
 def ecg_medio_fs(request):
     global pacient
+    global fig_path
     global fs
-    global fig_path_fs
-    fig_path_fs = plot_ecg_with_fs(fs)
-    return render(request, 'damo/ecg-medio-fs.html', {'result': fig_path_fs})
+    global ind, pvcc, ecg
+    fig_path = plot_ecg_with_fs(ind,pvcc,ecg,fs)
+    if fig_path is None:
+        return render(request,'damo/error.html')
+    else: 
+        return render(request, 'damo/ecg-medio.html', {'result': fig_path})
 
 def ritmo(request):
     global pacient
     global ritmo_medio
-    if pacient is None:
-        template = loader.get_template('damo/ritmo_error.html')
-    else:
+    if pacient != 0:
         template = loader.get_template('damo/ritmo.html')
+    else:
+        template = loader.get_template('damo/ritmo_error.html')
 
     context = {'result' : round(ritmo_medio,2)}
 
@@ -242,10 +260,11 @@ def meanpvcs(request):
     global pvcs
     global pacient
     global average_pvc_ecg
-    if pacient is None:
-        template = loader.get_template('damo/meanpvcs_error.html')
-    else:
+    if pacient is not None:
         template = loader.get_template('damo/meanpvcs.html')
+    else:
+        template = loader.get_template('damo/meanpvcs_error.html')
+
 
     context = {'result' : round(average_pvc_ecg,2)}
     return HttpResponse(template.render(context,request))
@@ -255,13 +274,13 @@ def ciclicos(request):
     global pacient
     global ciclicos_pvcs
     global ciclos
-    if pacient is None:
-        template = loader.get_template('damo/ciclicos_error.html')
-    else:
+    global totalCiclos
+    if pacient is not None:
         template = loader.get_template('damo/ciclicos.html')
-
-    if ciclos != None or ciclos != 0:
-        context = {'result' : ciclicos_pvcs, 'ciclos':ciclos}
+    else:
+        template = loader.get_template('damo/ciclicos_error.html')
+    if ciclos != 0:
+        context = {'result' : ciclicos_pvcs, 'ciclos':ciclos, 'total':totalCiclos}
     else:
         context = {'result': ciclicos_pvcs}
 
@@ -278,10 +297,11 @@ def relatorio(request):
     global ritmo_medio
     global average_pvc_ecg
     global ciclicos_pvcs
-    if pacient is None:
-        template = loader.get_template('damo/relatorio_error.html')
-    else:
+    if pacient is not None:
         template = loader.get_template('damo/relatorio.html')
+    else:
+        template = loader.get_template('damo/relatorio_error.html')
+
 
     result1 = beats
     result2 = pvcs
@@ -290,7 +310,7 @@ def relatorio(request):
     result5 = round(average_pvc_ecg,2)
     result6 = round(ritmo_medio,2)
     result7 = ciclicos_pvcs
-    context = {'result1': result1, 'result2': result2, 'result3':result3, 
+    context = {'result1': result1, 'result2': result2, 'result3':result3,
                'result4':result4,'result5':result5,'result6':result6,'result7':result7}
 
     return HttpResponse(template.render(context,request))
@@ -303,10 +323,9 @@ def predict(data, fs):
     global f1_score
     global pvch
     global ritmo_medio
-    global ciclicos_pvcs    
-    global pacient
+    global ciclicos_pvcs
     global ciclos
-
+    global totalCiclos
     # PRE PROC
     # df = pd.DataFrame(columns=["ECG","IND","PVC"])
     dados = data['DAT'][0]
@@ -327,7 +346,7 @@ def predict(data, fs):
         if p != 0 | p != 1:
             pvcc = np.delete(pvcc,i)
             ind = np.delete(ind,i)
-    
+
     beats = len(ind)
     pvcs = np.count_nonzero(pvcc == 1)
     duration_minutes = 30
@@ -338,18 +357,33 @@ def predict(data, fs):
     duration_minutes = 30
     duration_seconds = duration_minutes * 60
     ritmo_medio = (beats / duration_seconds) * 60
-    
+
     # Ciclicos
     ciclos = 0
-    for i in range(len(ecg)-1):
-    #Check if PVCs are detected in two consecutive beats
-        if ecg[i+1] - ecg[i] == 1:
-            ciclos += 1
-            ciclicos_pvcs = "Tem"
-        else:
-            ciclicos_pvcs = "Não tem"
+    threshold = 1
+    ciclicos_pvcs = False
+    ciclos = []
+    totalCiclos = 0
+    c = 0
+    for i in range(len(ecg) - 2):
+        # Verifica se o valor atual é menor que o valor anterior e também menor que o valor posterior
+        if ecg[i] < ecg[i-1] and ecg[i] < ecg[i+1]:
+            # Verifica se a diferença entre o valor anterior e o posterior é maior que o threshold
+            if abs(ecg[i-1] - ecg[i+1]) > threshold:
+                totalCiclos +=1
+                c += 1
+                ciclicos_pvcs = True
+            else:
+                ciclos.append(c)
+                c = 0
+                ciclicos_pvcs = False
 
-    
+    ciclos = max(ciclos)
+    if ciclos > 0:
+        ciclicos_pvcs = "Tem"
+    else:
+        ciclicos_pvcs = "Não tem"
+
     y = pvcc
 
     new_ecg = np.zeros(len(ind))
@@ -383,21 +417,22 @@ def predict(data, fs):
             f1_score = f1_score_model
         else:
             f1_score = f1_score_nb
-    else: 
+    else:
         f1_score = f1_score_clf
 
     detected()
 
-def plt_ecg_medio():
-    
-    global ind,pvcc,ecg
+def plt_ecg_medio(ind,pvcc,ecg):
 
     ind_array_clean = deepcopy(ind)
     pvc_array_clean = deepcopy(pvcc)
     ecg_array_clean = deepcopy(ecg)
 
     average_ecg = aligned_ecg_average(ecg_array_clean, ind_array_clean, pvc_array_clean)
-
+    
+    if average_ecg is None:
+        return average_ecg
+    
     # Plota o ECG médio alinhado no pico R
     plt.figure(figsize=(8, 6))
     plt.plot(average_ecg)
@@ -414,16 +449,16 @@ def plt_ecg_medio():
 
     return fig_path
 
-def plot_ecg_with_fs(fs):
-
-    global ind,pvcc,ecg
+def plot_ecg_with_fs(ind,pvcc,ecg,fs):
 
     ind_array_clean = deepcopy(ind)
     pvc_array_clean = deepcopy(pvcc)
     ecg_array_clean = deepcopy(ecg)
 
-
     average_ecg = aligned_ecg_average(ecg_array_clean, ind_array_clean, pvc_array_clean)
+
+    if average_ecg is None:
+        return average_ecg
 
     segment_length = 41
 
@@ -453,13 +488,15 @@ def aligned_ecg_average(ecg, ind_array, pvc_array):
         segment_length = 41  # Comprimento fixo do segmento de ECG
         aligned_segments = []
 
-        for i, peak in enumerate(ind_array):
-            if pvc_array[i] == 0:  # Filtra batimentos cardíacos normais
-                start = peak - int(segment_length / 2)
-                end = peak + int(segment_length / 2) + 1
-                segment = ecg[start:end]
-                aligned_segments.append(segment)
-
+        if ind_array is not None:
+            for i, peak in enumerate(ind_array):
+                if pvc_array[i] == 0:  # Filtra batimentos cardíacos normais
+                    start = peak - int(segment_length / 2)
+                    end = peak + int(segment_length / 2) + 1
+                    segment = ecg[start:end]
+                    aligned_segments.append(segment)
+        else:
+            return
         # Alinha os segmentos com base no pico R
         aligned_segments = np.array(aligned_segments)
         aligned_segments = np.transpose(aligned_segments)
@@ -480,15 +517,15 @@ def detected():
     for i in range(len(ind) - window_size + 1):
         current_window = ind[i:i+window_size]  # Get the beats in the current window
         current_beat = ecg[current_window[window_size // 2]]  # Get the current beat
-        
+
         # Get the neighboring beats
         previous_beat = ecg[current_window[window_size // 2 - 1]]
         next_beat = ecg[current_window[window_size // 2 + 1]]
-        
+
         # Calculate the mean squared error (MSE) between the current beat and its neighbors
         mse_previous = np.mean((current_beat - previous_beat) ** 2)
         mse_next = np.mean((current_beat - next_beat) ** 2)
-        
+
         # Check if the MSE exceeds the threshold for PVC detection
         threshold = 0.1  # Adjust the threshold based on your specific application
         if mse_previous > threshold and mse_next > threshold:

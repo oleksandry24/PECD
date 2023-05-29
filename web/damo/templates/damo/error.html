@@ -6,12 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="/web/damo/static/style.css">
   </head>
   <body>
     <nav class = "nav">
-
-
       <div class="nav-link-container">
         <a href="/beat" class="nav-link">
             <span class="nav-text">Número Total de Beats</span>
@@ -64,23 +62,13 @@
       </div>
     </nav>
     <div class="section">
-        <h1 class = "user">Número de PVCs Cíclicos</h1>
-
-        <div class="capsula2">
-          <p class = 'text'>O número de PVCs Cíclicos presente é:</p>
-        </div>
-        
-        <p class = "result">{{result}} PVCs Cíclicos</p>
-        {% if ciclos %}
-          <p class = "result-ciclic">Tem {{ciclos}} Ciclos Seguidos, num total de {{total}}!</p>
-        {% endif %}
+        <h1 class = "user">Ups Erro!</h1>
+    </div>
+    <div class = "error">
+            <span><ion-icon name="warning-outline" style="color:#B50000; margin-right: 15px;"></ion-icon>Cicle Novamente na Funcionalidade!</span>
     </div>
 
-    <div class="container-change">
-      <a href="/paciente" class = "pac">Escolher Outro Paciente</a>
-    </div>
-
-    <img class="images" src="{% static 'blueHeart.png' %}">
+    <img class="images" src="{% static 'redHeart.png' %}">
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
