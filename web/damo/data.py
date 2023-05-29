@@ -10,6 +10,7 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import svm
+from sklearn.naive_bayes import GaussianNB
 
 import os
 
@@ -40,12 +41,8 @@ def globalDataFrame(global_ecg):
         ecg_array = np.array([x[0] for x in ecg_array])
         ind_array = np.array([x[0] for x in ind_array])
         pvc_array = np.array([x[0] for x in pvc_array])
-
-        ecg, ind, pvc = preprocess_ecg(ecg_array, ind_array, pvc_array)
-        
-        sample_rate = 360
-        time_ecg = (round(len(ecg)/sample_rate))
-        min_ecg = time_ecg/60
+        fs = None
+        ecg, ind, pvc = preprocess_ecg(ecg_array, ind_array, pvc_array, fs)
 
         for i, p in enumerate(pvc):
             if p != 0 | p != 1:
@@ -56,88 +53,68 @@ def globalDataFrame(global_ecg):
 
     return global_ecg
 
-## filtro de linha de base, filtro de alta frequência e filtro de baixa frequência
-# Remoção de ruído de linha de base
-# Filtro passa-baixa
-# Filtro passa-alta
-# Normalização
-# Remoção de picos R mal definidos
-# Redução de artefatos de linha de base
-# Detecção de anomalias
- 
-def preprocess_ecg(ecg_signal, ind_array, pvc):
+def preprocess_ecg(ecg_signal, ind_array, pvc, fs):
     # 1. Remoção de ruído de linha de base
-    # ecg_baseline = signal.medfilt(ecg_signal, kernel_size=31)
-    # ecg_signal = ecg_signal - ecg_baseline
-    
+    ecg_baseline = sig.medfilt(ecg_signal, kernel_size=31)
+    ecg_signal = ecg_signal - ecg_baseline
+
     # 2. Filtro passa-baixa
-    # nyquist_freq = 0.5 * fs
-    # low_cutoff = 5 / nyquist_freq
-    # b, a = signal.butter(1, low_cutoff, btype='low')
-    # ecg_signal = signal.filtfilt(b, a, ecg_signal)
-    
+    if fs is not None and fs != 0:
+        nyquist_freq = 0.5 * fs
+        low_cutoff = 5 / nyquist_freq
+        b, a = sig.butter(1, low_cutoff, btype='low')
+        ecg_signal = sig.filtfilt(b, a, ecg_signal)
+
     # 3. Filtro passa-alta
-    # high_cutoff = 0.5 / nyquist_freq
-    # b, a = signal.butter(1, high_cutoff, btype='high')
-    # ecg_signal = signal.filtfilt(b, a, ecg_signal)
-    
+    if fs is not None and fs != 0:
+        nyquist_freq = 0.5 * fs
+        high_cutoff = 0.5 / nyquist_freq
+        b, a = sig.butter(1, high_cutoff, btype='high')
+        ecg_signal = sig.filtfilt(b, a, ecg_signal)
+
     # 4. Normalização
-    max = ecg_signal.max()
-    min = ecg_signal.min()    
-    norm_ecg = np.array([(x-min)/(max-min)*10 for x in ecg_signal])
+    max_value = np.max(ecg_signal)
+    min_value = np.min(ecg_signal)    
+    norm_ecg = (ecg_signal - min_value) / (max_value - min_value) * 10
 
     # 5. Remoção de picos R mal definidos
     window_size = 8
     smoothed_ecg = np.convolve(norm_ecg.flatten(), np.ones((window_size,))/window_size, mode='valid')
-    ind_array_clean = deepcopy(ind_array)
-    pvc_array_clean = deepcopy(pvc)
-    mal_class = []
+    ind_array_clean = []
+    pvc_array_clean = []
     for i, peak in enumerate(ind_array):
-        temp = (ecg_signal[peak-20:peak+20])
+        temp = ecg_signal[peak-20:peak+20]
         if len(temp) > 0:
-            if (temp.max() - temp.min()) < 2:
-                mal_class.append(i)
-                ind_array_clean = np.delete(ind_array_clean, mal_class)
-                pvc_array_clean = np.delete(pvc_array_clean, mal_class)
+            if np.max(temp) - np.min(temp) >= 2:  # Critério de amplitude mínima
+                ind_array_clean.append(peak)
+                pvc_array_clean.append(pvc[i])
     
-    # 6. Detecção de anomalias
-    anomalies = []
-    mean = np.mean(smoothed_ecg)
-    std = np.std(smoothed_ecg)
-    for i in range(len(smoothed_ecg)):
-        if (smoothed_ecg[i] < mean - 3 * std) or (smoothed_ecg[i] > mean + 3 * std):
-            anomalies.append(i)
-    smoothed_ecg[anomalies] = np.mean(smoothed_ecg)
-
     return smoothed_ecg, ind_array_clean, pvc_array_clean
 
 
 global_ecg = globalDataFrame(global_ecg)
 
-clf = svm.SVC()
-model = RandomForestClassifier(n_estimators=100, random_state=42)
+nb = GaussianNB()
+clf = svm.LinearSVC()
+model = RandomForestClassifier(n_estimators=100,random_state=42, max_depth=10, min_samples_split=5)
 
 ########################### 
-for indice, linha in global_ecg.iterrows():
-    ecg = linha['ECG']
-    ind = linha['IND']
-    pvc = linha['PVC']
 
-    coeffs = pywt.wavedec(ecg, 'db4', level=6)
-    cA6, cD6, cD5, cD4, cD3, cD2, cD1 = coeffs
-    threshold = np.std(cD1)
-    peaks, _ = sig.find_peaks(cD1, distance=200, height=threshold)
+for ind, row in global_ecg.iterrows():
+    ecg = row['ECG']
+    ind = row['IND']
+    pvc = row['PVC']
 
-    # Etapa 3: Encontrar os picos R marcados na coluna do DataFrame correspondente
-    r_peak_indices = [int(idx) for idx in ind]
+    new_ecg = np.zeros(len(ind))
 
-    # Etapa 4: Separar as features das etiquetas e dividir o conjunto de dados em conjuntos de treinamento e teste
-    X = np.array(peaks).reshape(-1, 1)
-    y = np.array(pvc)
+    for i in range(len(ind)):
+        new_ecg[i] = ecg[ind[i]]
 
-    y = y[:len(X)]
+    X = new_ecg.reshape(-1,1)
+    y = pvc
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42, shuffle=False)
 
     model.fit(X_train, y_train)
     clf.fit(X_train, y_train)
+    nb.fit(X_train, y_train)

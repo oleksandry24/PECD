@@ -22,22 +22,22 @@ import base64
 from copy import deepcopy
 
 import matplotlib.pyplot as plt
-from .data import model, clf, preprocess_ecg
+from .data import model, clf, preprocess_ecg, nb
 
 # https://youtube.com/shorts/X7i9VNKrHl0?feature=share
 
 ind = None
 ecg = None
-pvc = None
-
+pvcc = None
+myfile = None
 pacient = None
 first_name = None
 last_name = None
 beats = 0
 fs = 0
-pvcs = 0
+pvcs = None
 user = None
-pvch = 0
+pvch = None
 fig_path = ''
 ritmo_medio = 0
 f1_score = 0
@@ -102,30 +102,47 @@ def home(request):
     global pacient
     return render(request, 'damo/home.html')
 
+def escolha_fs(request):
+    global fs
+    if request.method == 'POST':
+        fs = request.POST['fs']
+        if fs != '' and fs != '0':
+            fs = int(request.POST['fs'])
+            return redirect(new_home)
+        elif fs == '0':
+            return render(request, 'damo/ecg_error.html')
+    
+    fs = None
+    return render(request, 'damo/escolha_fs.html')
+
 def new_home(request):
     global pacient
+    global fs
+    global myfile
+    predict(myfile, fs)
     template = loader.get_template('damo/new_home.html')
-    return HttpResponse(template.render(request))
+    context = {'fs': fs}
+    return HttpResponse(template.render(context, request))
 
 def paciente(request):
-
+    global myfile
     global pacient
     pacient = None
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
+        load = loadmat(myfile)
+        myfile = load
         pacient = fs.url(filename)
-        print(pacient)
         
         allowed_extensions = {'mat'}
         if allowed_file(pacient, allowed_extensions):
-            load = loadmat(myfile)
             if load == {}:
-                return render (request, 'damo/p2.html')
+                pacient = None
+                return render(request, 'damo/p2.html')
             else:
-                predict(myfile)
-                return render(request, 'damo/new_home.html')
+                return redirect(escolha_fs)
         else:
             pacient = None
             return render(request, 'damo/p_1.html')
@@ -135,23 +152,16 @@ def allowed_file(filename, allowed_extensions):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
-def ecg(request):
+def ecg_medio(request):
     global pacient
-    global fs 
-
+    global fs
     if pacient is None:
-        return render(request, 'damo/escolha_fs_error.html')
+        return render(request, 'damo/escolha_fs_eror.html')
     else:
-        if request.method == 'POST':
-            fs = request.POST['fs']
-            if fs != '' and fs != '0':
-                fs = int(request.POST['fs'])
-                print(fs)
-                return redirect(ecg_medio_fs)
-            elif fs == '0':
-                return render(request, 'damo/ecg_error.html')
-            fs = request.POST['fs']
-        return render(request, 'damo/escolha_fs.html')
+        if fs != None:
+            return redirect(ecg_medio_fs)
+        else:
+            return redirect(ecg_medio_plot)
 
 def beat(request):
     global beats
@@ -198,11 +208,11 @@ def f1(request):
     else:
         template = loader.get_template('damo/f1.html')
 
-    context = {'result' : float(f1_score)*100}
+    context = {'result' : round(float(f1_score)*100,2)}
 
     return HttpResponse(template.render(context,request))
 
-def ecg_medio(request):
+def ecg_medio_plot(request):
     global pacient
     global fig_path
     fig_path = plt_ecg_medio()
@@ -213,7 +223,6 @@ def ecg_medio_fs(request):
     global fs
     global fig_path_fs
     fig_path_fs = plot_ecg_with_fs(fs)
-    print(fig_path_fs)
     return render(request, 'damo/ecg-medio-fs.html', {'result': fig_path_fs})
 
 def ritmo(request):
@@ -224,7 +233,7 @@ def ritmo(request):
     else:
         template = loader.get_template('damo/ritmo.html')
 
-    context = {'result' : round(ritmo_medio,4)}
+    context = {'result' : round(ritmo_medio,2)}
 
     return HttpResponse(template.render(context,request))
 
@@ -238,7 +247,7 @@ def meanpvcs(request):
     else:
         template = loader.get_template('damo/meanpvcs.html')
 
-    context = {'result' : round(average_pvc_ecg,4)}
+    context = {'result' : round(average_pvc_ecg,2)}
     return HttpResponse(template.render(context,request))
 
 def ciclicos(request):
@@ -255,7 +264,7 @@ def ciclicos(request):
 
 
 def relatorio(request):
-    global ecg, pvc, ind
+    global ecg, pvcc, ind
     global pacient
     global beats
     global pvcs
@@ -272,9 +281,9 @@ def relatorio(request):
     result1 = beats
     result2 = pvcs
     result3 = pvch
-    result4 = float(f1_score) *100
-    result5 = round(average_pvc_ecg,4)
-    result6 = round(ritmo_medio,4)
+    result4 = round(float(f1_score) *100,2)
+    result5 = round(average_pvc_ecg,2)
+    result6 = round(ritmo_medio,2)
     result7 = ciclicos_pvcs
     context = {'result1': result1, 'result2': result2, 'result3':result3, 
                'result4':result4,'result5':result5,'result6':result6,'result7':result7}
@@ -282,18 +291,19 @@ def relatorio(request):
     return HttpResponse(template.render(context,request))
 
 
-def predict(data):
-    global ind, pvc, ecg
+def predict(data, fs):
+    global ind, pvcc, ecg
     global beats
     global pvcs
     global f1_score
     global pvch
     global ritmo_medio
     global ciclicos_pvcs    
+    global pacient
+
     # PRE PROC
-    df = pd.DataFrame(columns=["ECG","IND","PVC"])
-    load = loadmat(data)
-    dados = load['DAT'][0]
+    # df = pd.DataFrame(columns=["ECG","IND","PVC"])
+    dados = data['DAT'][0]
     df_dados = pd.DataFrame(dados)
     ecg_array = np.array(df_dados['ecg'][0])
     ind_array = np.array(df_dados['ind'][0])
@@ -303,15 +313,17 @@ def predict(data):
     ind_array = np.array([x[0] for x in ind_array])
     pvc_array = np.array([x[0] for x in pvc_array])
 
-    ecg, ind, pvc = preprocess_ecg(ecg_array, ind_array, pvc_array)
+    ecg, ind, pvcc = preprocess_ecg(ecg_array, ind_array, pvc_array, fs)
+    pvcc = np.array(pvcc)
+    ind = np.array(ind)
 
-    for i, p in enumerate(pvc):
+    for i, p in enumerate(pvcc):
         if p != 0 | p != 1:
-            pvc = np.delete(pvc,i)
+            pvcc = np.delete(pvcc,i)
             ind = np.delete(ind,i)
     
     beats = len(ind)
-    pvcs = np.sum(pvc == 1)
+    pvcs = np.count_nonzero(pvcc == 1)
     duration_minutes = 30
     duration_hours = duration_minutes / 60
     pvch = pvcs / duration_hours
@@ -322,80 +334,65 @@ def predict(data):
     ritmo_medio = (beats / duration_seconds) * 60
     
     # Ciclicos
-
-    for i in range(len(ind)-1):
+    ciclos = 0
+    for i in range(len(ecg)-1):
     #Check if PVCs are detected in two consecutive beats
-        if ind[i+1] - ind[i] == 1:
-            ciclicos_pvcs = True
+        if ecg[i+1] - ecg[i] == 1:
+            ciclos += 1
             ciclicos_pvcs = "Tem"
         else:
-            ciclicos_pvcs = False
             ciclicos_pvcs = "Não tem"
 
+    print(ciclos)
+    y = pvcc
 
-    coeffs = pywt.wavedec(ecg, 'db4', level=6)
-    cA6, cD6, cD5, cD4, cD3, cD2, cD1 = coeffs
-    threshold = np.std(cD1)
-    peaks, _ = sig.find_peaks(cD1, distance=200, height=threshold)
+    new_ecg = np.zeros(len(ind))
 
-    # Etapa 4: Separar as features das etiquetas e dividir o conjunto de dados em conjuntos de treinamento e teste
-    X = np.array(peaks).reshape(-1, 1)
-    y = np.array(pvc)
+    for i in range(len(ind)):
+        new_ecg[i] = ecg[ind[i]]
 
-    y = y[:len(X)]
+    X = new_ecg.reshape(-1,1)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42, shuffle=False)
+    model_pred = model.predict(X)
+    clf_pred = clf.predict(X)
+    nb_pred = nb.predict(X)
 
-    y_pred = model.predict(X_test)
-    # Etapa 7: Avaliar a precisão do modelo no conjunto de teste
-
-    print('RFC:')
-    report = classification_report(y_test, y_pred, zero_division=1)
+    report = classification_report(y, model_pred, zero_division=1)
     report_lines = report.split('\n')
-    f1_score = report_lines[2].split()[3]
-    print("F1-score: ", f1_score)
-    accuracy = model.score(X_test, y_test)
-    print(f"Acurácia do modelo RFC: {accuracy:.2f}")
+    f1_score_model = report_lines[3].split()[3]
+    print("F1-score RFC:", f1_score_model)
 
-    print('\n')
-
-    clf_pred = clf.predict(X_test)
-    print('SVM:')
-    report = classification_report(y_test, y_pred, zero_division=1)
+    report = classification_report(y, clf_pred, zero_division=1)
     report_lines = report.split('\n')
-    f1_score = report_lines[2].split()[3]
-    print("F1-score: ", f1_score)
-    accuracy = model.score(X_test, y_test)
-    print(f"Acurácia do modelo SVM: {accuracy:.2f}")
+    f1_score_clf = report_lines[3].split()[3]
+    print("F1-score SVM:", f1_score_clf)
+
+    report = classification_report(y, nb_pred, zero_division=1)
+    report_lines = report.split('\n')
+    f1_score_nb = report_lines[3].split()[3]
+    print("F1-score Naive:", f1_score_nb)
+
+    if f1_score_model > f1_score_clf:
+        if f1_score_model > f1_score_nb:
+            f1_score = f1_score_model
+        else:
+            f1_score = f1_score_nb
+    else: 
+        f1_score = f1_score_clf
 
     detected()
 
 def plt_ecg_medio():
     
-    global ind,pvc,ecg
+    global ind,pvcc,ecg
 
     ind_array_clean = deepcopy(ind)
-    pvc_array_clean = deepcopy(pvc)
+    pvc_array_clean = deepcopy(pvcc)
+    ecg_array_clean = deepcopy(ecg)
 
-    # Set a fixed length for the ECG segments
-    segment_length = 41
+    average_ecg = aligned_ecg_average(ecg_array_clean, ind_array_clean, pvc_array_clean)
 
-    # Extract ECG segments of normal beats
-    normal_segments = []
-    for i, peak in enumerate(ind_array_clean):
-        if pvc_array_clean[i] == 0:  # Filter normal beats
-            segment = ecg[peak-20:peak+21]  # Adjust the window size around the peak
-            normal_segments.append(segment)
-
-    # Pad the segments to a fixed length
-    padded_segments = np.zeros((len(normal_segments), segment_length))
-    for i, segment in enumerate(normal_segments):
-        padded_segments[i, :len(segment)] = segment
-
-    # Calculate the average ECG waveform
-    average_ecg = np.mean(padded_segments, axis=0)
-
-    # Plot the average ECG waveform
+    # Plota o ECG médio alinhado no pico R
     plt.figure(figsize=(8, 6))
     plt.plot(average_ecg)
     plt.xlabel('Amostras')
@@ -413,36 +410,25 @@ def plt_ecg_medio():
 
 def plot_ecg_with_fs(fs):
 
-    global ind,pvc,ecg
+    global ind,pvcc,ecg
 
-    # Set a fixed length for the ECG segments
+    ind_array_clean = deepcopy(ind)
+    pvc_array_clean = deepcopy(pvcc)
+    ecg_array_clean = deepcopy(ecg)
+
+
+    average_ecg = aligned_ecg_average(ecg_array_clean, ind_array_clean, pvc_array_clean)
+
     segment_length = 41
 
-    # Define the sample frequency (in Hz)
     sample_frequency = fs
-
     # Calculate the time axis values
     time_axis = np.arange(segment_length) / sample_frequency
 
-    # Extract ECG segments of normal beats
-    normal_segments = []
-    for i, peak in enumerate(ind):
-        if pvc[i] == 0:  # Filter normal beats
-            segment = ecg[peak-20:peak+21]  # Adjust the window size around the peak
-            normal_segments.append(segment)
-
-    # Pad the segments to a fixed length
-    padded_segments = np.zeros((len(normal_segments), segment_length))
-    for i, segment in enumerate(normal_segments):
-        padded_segments[i, :len(segment)] = segment
-
-    # Calculate the average ECG waveform
-    average_ecg = np.mean(padded_segments, axis=0)
-
-    # Plot the average ECG waveform
+    # Plota o ECG médio alinhado no pico R
     plt.figure(figsize=(8, 6))
     plt.plot(time_axis, average_ecg)
-    plt.xlabel('Tempo (s)')
+    plt.xlabel('Amostras')
     plt.ylabel('Amplitude')
     plt.title('ECG Médio com Frequência')
 
@@ -457,8 +443,28 @@ def plot_ecg_with_fs(fs):
 
     return fig_path_fs
 
+def aligned_ecg_average(ecg, ind_array, pvc_array):
+        segment_length = 41  # Comprimento fixo do segmento de ECG
+        aligned_segments = []
+
+        for i, peak in enumerate(ind_array):
+            if pvc_array[i] == 0:  # Filtra batimentos cardíacos normais
+                start = peak - int(segment_length / 2)
+                end = peak + int(segment_length / 2) + 1
+                segment = ecg[start:end]
+                aligned_segments.append(segment)
+
+        # Alinha os segmentos com base no pico R
+        aligned_segments = np.array(aligned_segments)
+        aligned_segments = np.transpose(aligned_segments)
+
+        # Calcula a média ao longo do eixo temporal
+        average_ecg = np.mean(aligned_segments, axis=1)
+
+        return average_ecg
+
 def detected():
-    global ind,pvc,ecg
+    global ind,pvcc,ecg
     global average_pvc_ecg
     window_size = 5  # Define the window size
 

@@ -63,9 +63,15 @@
     </nav>
     <div class="section">
         <h1 class = "user">Escolha do Paciente</h1>
-        <div class="result">
-            <p>Paciente Selecionado!</p>
-        </div>
+        {% if fs %}
+          <div class="result">
+            <p>Paciente Selecionado com frequência!</p>
+          </div>
+        {% else %}
+          <div class="result">
+              <p>Paciente Selecionado!</p>
+          </div>
+        {% endif %}
     </div>
 
     <div class="container-change">

@@ -3,6 +3,7 @@
 body {
     display: flex;
     font-family: 'Eagle Light', sans-serif;
+    overflow: scroll;
 }
 
 .ion {
@@ -22,9 +23,11 @@ body {
 */
 
 .images {
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
+    width: 22%;
+    height: auto;
 }
 
 .login-image {
@@ -33,21 +36,19 @@ body {
 
 }
 
-
-
 .login-container {
-    position: relative;
+    position: absolute;
     z-index: 1;
 }
 
 .nav{
     width: 300px;
     margin: 1vh 0;
-    height: 98vh;
+    height: 95%;
     position: fixed;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     justify-content: center;
     align-items: center;
     top: 0;
@@ -507,7 +508,7 @@ body {
     background: #ffffff;
     border-radius: 10px;
     box-shadow: 10px 10px 10px #b9b8b8;
-    width: 740px;
+    width: 640px;
     height: 200px;
     text-align: center;
     align-content: center;
@@ -682,22 +683,22 @@ WELCOME
 
 .head{
     position: absolute;
-    top: 100px;
-    left: 250px;
-    font-size: 100px;
+    top: 15%;
+    left: 22%;
+    font-size: 670%;
     font-weight: bold;
     font-family: 'Eagle Light', sans-serif;
 }
 
 .btn-28 {
     position: absolute;
-    top: 500px;
-    left: 600px;
+    bottom: 20%;
+    left: 37%;
 }
 .btn-10 {
     position: absolute;
-    top: 500px;
-    left: 750px;
+    bottom: 20%;
+    left: 47%;
 }
 
 .button-29 {
@@ -752,21 +753,25 @@ WELCOME
 }
 
 .doctor {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
+    width: 22%;
+    height: auto;
 }
 
 .chart {
-    position: fixed;
-    top:50px;
-    right: 200px;
+    position: absolute;
+    top:5%;
+    right: 10%;
+    width: 17%;
+    height: auto;
 }
 
 .head-login {
     position: absolute;
     top: 150px;
-    left: 600px;
+    left: 650px;
     font-size: 50px;
     font-weight: bold;
     font-family: 'Eagle Light', sans-serif;
@@ -775,13 +780,13 @@ WELCOME
 .c-user {
     position: absolute;
     top: 250px;
-    left: 600px;
+    left: 650px;
 }
 
 .c-pass {
     position: absolute;
     top: 330px;
-    left: 600px;
+    left: 650px;
 }
 
 .username {
@@ -827,7 +832,7 @@ WELCOME
 .btn-31 {
     position: absolute;
     top: 500px;
-    left: 600px;
+    left: 650px;
     width: 400px;
 }
 
@@ -1142,7 +1147,7 @@ LOGOUT
     text-align: center;
     width: 290px;
   }
-
+  
   .btn-goback {
     position: absolute;
     top: 600px;
