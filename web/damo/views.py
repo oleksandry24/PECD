@@ -254,12 +254,17 @@ def ciclicos(request):
     global pvcs
     global pacient
     global ciclicos_pvcs
+    global ciclos
     if pacient is None:
         template = loader.get_template('damo/ciclicos_error.html')
     else:
         template = loader.get_template('damo/ciclicos.html')
 
-    context = {'result' : ciclicos_pvcs}
+    if ciclos != None or ciclos != 0:
+        context = {'result' : ciclicos_pvcs, 'ciclos':ciclos}
+    else:
+        context = {'result': ciclicos_pvcs}
+
     return HttpResponse(template.render(context,request))
 
 
@@ -300,6 +305,7 @@ def predict(data, fs):
     global ritmo_medio
     global ciclicos_pvcs    
     global pacient
+    global ciclos
 
     # PRE PROC
     # df = pd.DataFrame(columns=["ECG","IND","PVC"])
@@ -343,7 +349,7 @@ def predict(data, fs):
         else:
             ciclicos_pvcs = "Não tem"
 
-    print(ciclos)
+    
     y = pvcc
 
     new_ecg = np.zeros(len(ind))

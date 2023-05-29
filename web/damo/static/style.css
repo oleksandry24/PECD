@@ -385,6 +385,15 @@ body {
     font-weight: bold;
 }
 
+.result-ciclic {
+    position: absolute;
+    top: 550px;
+    left: 700px;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    font-weight: bold;
+}
+
 .capsula2 {
     position: absolute;
     top: 300px;

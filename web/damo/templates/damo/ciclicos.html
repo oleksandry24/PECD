@@ -69,9 +69,11 @@
         <div class="capsula2">
           <p class = 'text'>O número de PVCs Cíclicos presente é:</p>
         </div>
-      
-        <p class = "result">{{result}} PVCs Cíclicos
-        </p>
+        
+        <p class = "result">{{result}} PVCs Cíclicos</p>
+        {% if ciclos %}
+          <p class = "result-ciclos">Tem {{ciclos}} Ciclos</p>
+        {% endif %}
     </div>
 
     <div class="container-change">
